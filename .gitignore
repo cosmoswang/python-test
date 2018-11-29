@@ -1,0 +1,7 @@
+*/.res
+*/.config
+__pycache__
+.vscode
+spider/ffmpeg_roast.sh
+.test
+.test/mail.py
