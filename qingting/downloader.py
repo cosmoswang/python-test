@@ -9,6 +9,14 @@ class Downloader:
 		self.name = name
 		self.queue = queue.Queue()
 
+	def check_exists(self, title):
+		files = os.listdir(self.path)
+		for f in files:
+			if f.count(title) > 0:
+				return True
+
+		return False
+		
 	def start(self):
 		self.t = threading.Thread(target=self.__deamon_thread_target, args=[self.queue])
 		self.t.start()
