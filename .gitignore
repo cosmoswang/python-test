@@ -6,3 +6,4 @@ spider/ffmpeg_roast.sh
 .test
 .test/mail.py
 */venv/*
+.*
