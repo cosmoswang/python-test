@@ -7,3 +7,4 @@ spider/ffmpeg_roast.sh
 .test/mail.py
 */venv/*
 .*
+weinxin_token.py
