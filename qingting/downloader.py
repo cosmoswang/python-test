@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 import urllib3
+from bs4 import BeautifulSoup
 from concurrent.futures import ThreadPoolExecutor
-import queue,  time, threading, os
+import queue,  time, threading, os, random, requests
 
 class Downloader:
 
 	def __init__(self, name):
 		self.name = name
 		self.queue = queue.Queue()
+		self.use_agent = True
 
 	def check_exists(self, title):
 		files = os.listdir(self.path)
@@ -33,7 +35,14 @@ class Downloader:
 		self.queue.put(url)
 
 	def __download(self, url):
-		r = self.manager.request('get', url['url'])
+		if self.use_agent:
+			proxy = self.get_random_ip(self.get_ip_list())
+			print('使用代理{}下载{}'.format(proxy['http'], url['title']))
+			user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134'
+			p_manager = urllib3.ProxyManager(proxy['http'], headers={'connection': 'keep-alive', 'User-Agent': user_agent})
+			r = p_manager.request('get', url['url'])
+		else:
+			r = self.manager.request('get', url['url'])
 		if r.status == 200:
 			file = os.path.join(self.path, '{}-{}.m4a'.format(url['title'], url['timelong']))
 			with open(file, 'wb') as f:
@@ -48,6 +57,28 @@ class Downloader:
 				if e == 'EOF':
 					break
 				executor.submit(self.__download, e)
+	
+	def get_ip_list(self):
+		url = 'http://www.xicidaili.com/wt/'
+		user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134'
+		html = requests.get(url=url, headers={'User-Agent': user_agent}).text
+		soup = BeautifulSoup(html, 'html.parser')
+		ips = soup.find(id='ip_list').find_all('tr')
+		ip_list = []
+		for i in range(1, len(ips)):
+			ip_info = ips[i]
+			tds = ip_info.find_all('td')
+			ip_list.append(tds[1].text + ':' + tds[2].text)
+		return ip_list
+
+	def get_random_ip(self,ip_list):
+		proxy_list = []
+		for ip in ip_list:
+			proxy_list.append('http://' + ip)
+		proxy_ip = random.choice(proxy_list)
+		proxies = {'http': proxy_ip}
+		return proxies
+
 
 def main():
 	urls = [
