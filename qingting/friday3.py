@@ -62,6 +62,7 @@ def download_single(page, url_pattern, logger):
     html_parser = BeautifulSoup(html, 'html.parser')
 
     src = html_parser.find('audio').find('source').attrs['src']
+    logger.debug('识别到文件下载路径:{}'.format(src))
 
     Referer = url
 
