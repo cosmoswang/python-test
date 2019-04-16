@@ -1,8 +1,11 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
 from bs4 import BeautifulSoup
 import time, requests, sys, logging, os, random
 
 def main(start, end):
-    sleep_time = 60 * 15   # 每次下载的间隔时间 
+    sleep_time = 60 * 15   # 每次下载的间隔时间
 
     logger = logging.getLogger('friday')
     logger.setLevel(logging.DEBUG)
