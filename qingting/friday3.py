@@ -16,7 +16,7 @@ def main(start, end):
     fh.setFormatter(formatter)
     logger.addHandler(fh)
 
-    url_pattern = 'http://www.audio69.com/book/415/{}.html'
+    url_pattern = 'http://m.audio69.com/book/415/{}.html'
 
     if not os.path.exists('./.res/friday'):
         os.makedirs('./.res/friday')
@@ -57,15 +57,35 @@ def main(start, end):
 def download_single(page, url_pattern, logger):
     url = url_pattern.format(page)
     logger.info('开始下载第{}章，url:{}'.format(page, url))
-    user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134'
+    user_agent = 'Mozilla/5.0 (Linux; Android 8.1.0; OE106 Build/OPM1.171019.026) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.70 Mobile Safari/537.36'
     html = requests.get(url=url, headers={'User-Agent': user_agent}).text
     html_parser = BeautifulSoup(html, 'html.parser')
 
     src = html_parser.find('audio').find('source').attrs['src']
 
     Referer = url
+
+    '''
+    GET /asdasdasd/415/130/1555409707/62dc24b36491c7183ab1522c905daa56/768303c1a4d553ba53aa4929f44a4ab6.m4a HTTP/1.1
+    Host: q2.audio69.com
+    Connection: keep-alive
+    Accept-Encoding: identity;q=1, *;q=0
+    User-Agent: Mozilla/5.0 (Linux; Android 8.1.0; OE106 Build/OPM1.171019.026) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.70 Mobile Safari/537.36
+    Accept: */*
+    Referer: http://m.audio69.com/book/415/130.html
+    Accept-Language: zh-CN,zh;q=0.9
+    Range: bytes=0-
+    '''
+
+    Connection = 'keep-alive'
+    Accept_Encoding = 'identity;q=1, *;q=0'
+    Accept = '*/*'
+    Accept_Language = 'zh-CN,zh;q=0.9'
+    Range = 'bytes=0-'
+
     time.sleep(random.randint(3, 10))
-    r = requests.get(url=src, headers={'User-Agent': user_agent, 'Referer': Referer})
+    r = requests.get(url=src, headers={'User-Agent': user_agent, 'Referer': Referer, 'Connection': Connection,
+                                       'Accept-Encoding': Accept_Encoding, 'Accept': Accept, 'Accept-Language': Accept_Language, 'Range': Range})
     logger.info('第{}章下载完毕'.format(page))
     return r.content
 
