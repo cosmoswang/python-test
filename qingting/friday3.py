@@ -36,16 +36,16 @@ def main(start, end):
 
         content = download_single(page, url_pattern, logger)
 
-        if len(content) < 1024 * 1024:
-            # repeat once
-            logger.warning('下载的文件小于1M，可能有问题，延时后重试一次')
-            st = sleep_time + random.randint(-10, 60)
-            logger.debug('延时{}秒'.format(st))
-            time.sleep(st)
-            content = download_single(page, url_pattern, logger)
+        # if len(content) < 1024 * 1024:
+        #     # repeat once
+        #     logger.warning('下载的文件小于1M，可能有问题，延时后重试一次')
+        #     st = sleep_time + random.randint(-10, 60)
+        #     logger.debug('延时{}秒'.format(st))
+        #     time.sleep(st)
+        #     content = download_single(page, url_pattern, logger)
 
-            if len(content) < 1024 * 1024:
-                logger.warning('下载的文件重试后依然小于1M，已保存至{}，继续后面的下载'.format(file))
+        if len(content) < 1024 * 1024:
+            logger.warning('下载的文件重试后依然小于1M，已保存至{}，继续后面的下载'.format(file))
 
         with open(file, 'wb') as writer:
             writer.write(content)
