@@ -1,0 +1,4 @@
+  File "friday3.py", line 5
+SyntaxError: Non-ASCII character '\xe6' in file friday3.py on line 5, but no encoding declared; see http://python.org/dev/peps/pep-0263/ for details
+  File "friday3.py", line 5
+SyntaxError: Non-ASCII character '\xe6' in file friday3.py on line 5, but no encoding declared; see http://python.org/dev/peps/pep-0263/ for details

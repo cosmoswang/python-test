@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
 from bs4 import BeautifulSoup
@@ -73,5 +72,5 @@ def download_single(page, url_pattern, logger):
 
 
 if __name__ == "__main__":
-    main(130, 660)
+    main(230, 660)
 
