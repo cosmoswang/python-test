@@ -87,6 +87,9 @@ def download_single(page, url_pattern, logger):
     time.sleep(random.randint(3, 10))
     r = requests.get(url=src, headers={'User-Agent': user_agent, 'Referer': Referer, 'Connection': Connection,
                                        'Accept-Encoding': Accept_Encoding, 'Accept': Accept, 'Accept-Language': Accept_Language, 'Range': Range})
+    if r.status_code == 404:
+        r = requests.get(url=src, headers={'User-Agent': user_agent, 'Referer': Referer, 'Connection': Connection,
+                                       'Accept-Encoding': Accept_Encoding, 'Accept': Accept, 'Accept-Language': Accept_Language, 'Range': Range})
     logger.info('第{}章下载完毕'.format(page))
     return r.content
 
