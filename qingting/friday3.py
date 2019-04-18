@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import time, requests, sys, logging, os, random
 
 def main(start, end):
-    sleep_time = 60 * 15   # 每次下载的间隔时间
+    sleep_time = 60 * 12   # 每次下载的间隔时间
 
     logger = logging.getLogger('friday')
     logger.setLevel(logging.DEBUG)
@@ -21,6 +21,9 @@ def main(start, end):
     if not os.path.exists('./.res/friday'):
         os.makedirs('./.res/friday')
 
+    download_with_request(start, end, logger, url_pattern, sleep_time)
+
+def download_with_request(start, end, logger, url_pattern, sleep_time):
     for page in range(start, end + 1):
         if page == 0:
             continue
@@ -50,7 +53,7 @@ def main(start, end):
         with open(file, 'wb') as writer:
             writer.write(content)
 
-        st = sleep_time + random.randint(-10, 60)
+        st = sleep_time + random.randint(-60, 60)
         logger.debug('延时{}秒'.format(st))
         time.sleep(st)
 
@@ -64,8 +67,10 @@ def download_single(page, url_pattern, logger):
     src = html_parser.find('audio').find('source').attrs['src']
     logger.debug('识别到文件下载路径:{}'.format(src))
 
-    Referer = url
+    return download_m4a(src, logger, page, url, user_agent)
 
+
+def download_m4a(src, logger, page, Referer, user_agent):
     '''
     GET /asdasdasd/415/130/1555409707/62dc24b36491c7183ab1522c905daa56/768303c1a4d553ba53aa4929f44a4ab6.m4a HTTP/1.1
     Host: q2.audio69.com
@@ -89,7 +94,8 @@ def download_single(page, url_pattern, logger):
                                        'Accept-Encoding': Accept_Encoding, 'Accept': Accept, 'Accept-Language': Accept_Language, 'Range': Range})
     
     logger.debug('请求获取完毕，状态码：{}'.format(r.status_code))
-    if r.status_code == 404:
+    while r.status_code == 404:
+        time.sleep(1)
         logger.debug('404重试')
         r = requests.get(url=src, headers={'User-Agent': user_agent, 'Referer': Referer, 'Connection': Connection,
                                        'Accept-Encoding': Accept_Encoding, 'Accept': Accept, 'Accept-Language': Accept_Language, 'Range': Range})
@@ -97,7 +103,6 @@ def download_single(page, url_pattern, logger):
                                        
     logger.info('第{}章下载完毕'.format(page))
     return r.content
-
 
 
 if __name__ == "__main__":
